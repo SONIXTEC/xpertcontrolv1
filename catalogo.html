@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub | Catálogo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --card-bg: #ffffff;
+            --gaming-accent: #7209b7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text);
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--card-bg);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 30px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+            border-right: 3px solid var(--primary);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            background-color: #f5f7fa;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--gaming-accent);
+            border-radius: 3px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--gaming-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a08a0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gaming-accent);
+            color: var(--gaming-accent);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(114, 9, 183, 0.1);
+        }
+
+        .btn-outline.active {
+            background-color: var(--gaming-accent);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: var(--gaming-accent);
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .transaction-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .transaction-detail-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .transaction-detail-title i {
+            color: var(--gaming-accent);
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        /* Game Catalog Styles */
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #f1f3f5;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--gaming-accent));
+        }
+
+        .game-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            border-bottom: 3px solid var(--gaming-accent);
+            transition: all 0.3s ease;
+        }
+
+        .game-image:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+
+        .game-info {
+            padding: 15px;
+        }
+
+        .game-platform {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .platform-ps5 { background: rgba(0, 87, 184, 0.1); color: #0057b8; }
+        .platform-ps4 { background: rgba(0, 66, 152, 0.1); color: #004298; }
+        .platform-xbox { background: rgba(16, 124, 16, 0.1); color: #107c10; }
+
+        .star-rating {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .star {
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star.active {
+            color: var(--warning);
+            text-shadow: 0 0 8px rgba(248, 150, 30, 0.3);
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        /* Efecto hover para estrellas interactivas */
+        #modalRating .star:hover ~ .star {
+            color: var(--text-light);
+        }
+
+        #modalRating:hover .star {
+            color: var(--warning);
+        }
+
+        #modalRating .star:hover ~ .star {
+            color: var(--text-light);
+        }
+
+        .rating-comments {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Botón de subir juego */
+        .upload-game-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-game-btn input[type=file] {
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>GameHub</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="salas.html" class="nav-link">
+                        <i class="fas fa-tv"></i>
+                        <span>Salas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="inventario.html" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="transacciones.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Transacciones</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="gastos.html" class="nav-link">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Gastos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="reservas.html" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reservas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="catalogo.html" class="nav-link active">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Catálogo</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Catálogo de Juegos</h1>
+                <div class="upload-game-btn btn btn-primary">
+                    <i class="fas fa-plus"></i> Añadir Juego
+                    <input type="file" id="gameImageUpload" accept="image/*">
+                </div>
+            </div>
+
+            <!-- Filtros por Plataforma -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-filter"></i> Filtros</h3>
+                </div>
+                <div class="platform-filters" style="padding: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-outline btn-sm active" data-platform="all">Todos los Juegos</button>
+                    <button class="btn btn-outline btn-sm" data-platform="ps5">PlayStation 5</button>
+                    <button class="btn btn-outline btn-sm" data-platform="ps4">PlayStation 4</button>
+                    <button class="btn btn-outline btn-sm" data-platform="xbox">Xbox Series X/S</button>
+                </div>
+            </div>
+
+            <!-- Grid de Juegos -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-gamepad"></i> Juegos Disponibles</h3>
+                </div>
+                <div class="games-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px;">
+                    <!-- Los juegos se generan dinámicamente -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Calificación -->
+    <div class="modal-overlay" id="ratingModal" style="display: none;">
+        <div class="modal-content">
+            <div class="transaction-detail-header">
+                <h3 class="transaction-detail-title">
+                    <i class="fas fa-star"></i> <span id="gameRatingTitle">Calificar Juego</span>
+                </h3>
+                <button class="btn btn-outline btn-sm close-modal">×</button>
+            </div>
+            
+            <form id="ratingForm" style="display: grid; gap: 15px;">
+                <input type="hidden" id="currentGameId">
+                
+                <div class="detail-item">
+                    <label class="detail-label">Tu Calificación:</label>
+                    <div class="star-rating-container" style="padding: 10px; background: rgba(114, 9, 183, 0.05); border-radius: 8px;">
+                        <div class="star-rating" id="modalRating"></div>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Comentario:</label>
+                    <textarea class="form-control" id="commentInput" rows="4" placeholder="Escribe tu comentario sobre este juego..."></textarea>
+                </div>
+                
+                <div class="detail-item" style="text-align: right; margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Enviar Calificación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Añadir Juego -->
+    <div class="modal-overlay" id="addGameModal" style="display: none;">
+        <div class="modal-content">
+            <div class="transaction-detail-header">
+                <h3 class="transaction-detail-title">
+                    <i class="fas fa-plus-circle"></i> Añadir Nuevo Juego
+                </h3>
+                <button class="btn btn-outline btn-sm close-add-modal">×</button>
+            </div>
+            
+            <form id="addGameForm" style="display: grid; gap: 15px;">
+                <div class="detail-item">
+                    <label class="detail-label">Título del Juego:</label>
+                    <input type="text" class="form-control" id="gameTitle" required placeholder="Ej: FIFA 23">
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Plataforma:</label>
+                    <select class="form-control" id="gamePlatform" required>
+                        <option value="">Selecciona una plataforma</option>
+                        <option value="ps5">PlayStation 5</option>
+                        <option value="ps4">PlayStation 4</option>
+                        <option value="xbox">Xbox Series X/S</option>
+                    </select>
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Imagen del Juego:</label>
+                    <div class="form-control" style="display: flex; align-items: center; gap: 10px; height: auto; padding: 15px;">
+                        <div id="previewImage" style="width: 100px; height: 100px; border-radius: 8px; background: #f1f3f5; display: flex; justify-content: center; align-items: center;">
+                            <i class="fas fa-image" style="font-size: 2rem; color: var(--text-light);"></i>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-outline btn-sm" id="selectImageBtn">
+                                <i class="fas fa-upload"></i> Seleccionar Imagen
+                            </button>
+                            <input type="file" id="gameImage" accept="image/*" style="display: none;" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-item" style="text-align: right; margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Juego
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para juegos
+        let games = [
+            {
+                id: 1,
+                title: "God of War Ragnarök",
+                platform: "ps5",
+                rating: 4.8,
+                comments: 32,
+                image: "https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYdl7Oi0s.png"
+            },
+            {
+                id: 2,
+                title: "Halo Infinite",
+                platform: "xbox",
+                rating: 4.5,
+                comments: 28,
+                image: "https://store-images.s-microsoft.com/image/apps.21536.13727851868390641.c9cc5f66-aff8-406c-af6b-440838730be0.68796bde-cbf5-4eaa-a299-011417041da6"
+            },
+            {
+                id: 3,
+                title: "Spider-Man: Miles Morales",
+                platform: "ps4",
+                rating: 4.7,
+                comments: 45,
+                image: "https://image.api.playstation.com/vulcan/ap/rnd/202008/1020/T45iRN1bhiWcJUzST6UFGBvO.png"
+            },
+            {
+                id: 4,
+                title: "Forza Horizon 5",
+                platform: "xbox",
+                rating: 4.9,
+                comments: 52,
+                image: "https://store-images.s-microsoft.com/image/apps.46873.14208385495285702.53773fdc-cb2e-4d61-bc39-8629fe2d8cb3.f066252d-7926-490c-a3d5-95a915e41d7e"
+            },
+            {
+                id: 5,
+                title: "Horizon Forbidden West",
+                platform: "ps5",
+                rating: 4.6,
+                comments: 37,
+                image: "https://image.api.playstation.com/vulcan/ap/rnd/202107/3100/HO8vkO9pfXhwbHi5WHECQJdN.png"
+            },
+            {
+                id: 6,
+                title: "The Last of Us Part II",
+                platform: "ps4",
+                rating: 4.9,
+                comments: 68,
+                image: "https://image.api.playstation.com/vulcan/ap/rnd/202010/0222/niMUubpU9y1PxNvYmDfb8QFD.png"
+            }
+        ];
+
+        // Renderizar estrellas
+        function renderStars(rating, container, interactive = false) {
+            let html = '';
+            for(let i = 1; i <= 5; i++) {
+                html += `<i class="fas fa-star star ${i <= rating ? 'active' : ''}" 
+                          data-rating="${i}" 
+                          ${interactive ? 'onclick="setRating(this)"' : ''}></i>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // Mostrar modal de calificación
+        function showRatingModal(gameId) {
+            const game = games.find(g => g.id === gameId);
+            const modal = document.getElementById('ratingModal');
+            modal.style.display = 'flex';
+            
+            // Actualizar título e ID
+            document.getElementById('gameRatingTitle').textContent = `Calificar "${game.title}"`;
+            document.getElementById('currentGameId').value = gameId;
+            
+            // Inicializar estrellas
+            const starsContainer = document.getElementById('modalRating');
+            renderStars(0, starsContainer, true);
+        }
+
+        // Establecer calificación
+        function setRating(star) {
+            const stars = star.parentElement.children;
+            const rating = parseInt(star.dataset.rating);
+            
+            Array.from(stars).forEach(s => {
+                s.classList.toggle('active', parseInt(s.dataset.rating) <= rating);
+            });
+        }
+
+        // Filtrado por plataforma
+        document.querySelectorAll('.platform-filters button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelector('.platform-filters .active').classList.remove('active');
+                this.classList.add('active');
+                
+                const platform = this.dataset.platform;
+                filterGames(platform);
+            });
+        });
+        
+        // Filtrar juegos por plataforma
+        function filterGames(platform) {
+            const gameCards = document.querySelectorAll('.game-card');
+            
+            gameCards.forEach(card => {
+                if (platform === 'all' || card.dataset.platform === platform) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Renderizar juegos
+        function renderGames() {
+            const container = document.querySelector('.games-grid');
+            container.innerHTML = '';
+            
+            games.forEach(game => {
+                const gameEl = document.createElement('div');
+                gameEl.className = 'game-card';
+                gameEl.dataset.platform = game.platform;
+                gameEl.innerHTML = `
+                    <img src="${game.image}" class="game-image" alt="${game.title}" onclick="showRatingModal(${game.id})">
+                    <div class="game-info">
+                        <span class="game-platform platform-${game.platform}">${getPlatformName(game.platform)}</span>
+                        <h4 class="room-title">${game.title}</h4>
+                        <div class="star-rating" data-game-id="${game.id}"></div>
+                        <div class="rating-comments">
+                            <i class="fas fa-comment"></i> ${game.comments} comentarios
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(gameEl);
+                renderStars(game.rating, gameEl.querySelector('.star-rating'));
+            });
+        }
+        
+        // Obtener nombre completo de la plataforma
+        function getPlatformName(code) {
+            const platforms = {
+                'ps5': 'PlayStation 5',
+                'ps4': 'PlayStation 4',
+                'xbox': 'Xbox Series X/S'
+            };
+            return platforms[code] || code;
+        }
+
+        // Cerrar modales
+        document.querySelector('.close-modal').addEventListener('click', function() {
+            document.getElementById('ratingModal').style.display = 'none';
+        });
+        
+        // Manejar envío de calificación
+        document.getElementById('ratingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const gameId = parseInt(document.getElementById('currentGameId').value);
+            const stars = document.querySelectorAll('#modalRating .star.active').length;
+            const comment = document.getElementById('commentInput').value;
+            
+            if (stars === 0) {
+                alert('Por favor califica el juego con al menos una estrella');
+                return;
+            }
+            
+            // Actualizar datos (en un sistema real esto iría a una base de datos)
+            const gameIndex = games.findIndex(g => g.id === gameId);
+            if (gameIndex !== -1) {
+                games[gameIndex].comments += 1;
+                // Promedio ponderado para simular actualización de calificación
+                games[gameIndex].rating = ((games[gameIndex].rating * (games[gameIndex].comments - 1)) + stars) / games[gameIndex].comments;
+                games[gameIndex].rating = parseFloat(games[gameIndex].rating.toFixed(1));
+            }
+            
+            // Cerrar modal y actualizar UI
+            document.getElementById('ratingModal').style.display = 'none';
+            document.getElementById('commentInput').value = '';
+            renderGames();
+        });
+        
+        // Mostrar modal para añadir juegos
+        document.querySelector('.upload-game-btn').addEventListener('click', function(e) {
+            e.stopPropagation(); // Evitar que el input file se active automáticamente
+            document.getElementById('addGameModal').style.display = 'flex';
+        });
+        
+        // Cerrar modal de añadir juego
+        document.querySelector('.close-add-modal').addEventListener('click', function() {
+            document.getElementById('addGameModal').style.display = 'none';
+        });
+        
+        // Seleccionar imagen
+        document.getElementById('selectImageBtn').addEventListener('click', function() {
+            document.getElementById('gameImage').click();
+        });
+        
+        // Previsualizar imagen
+        document.getElementById('gameImage').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').innerHTML = `
+                        <img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Añadir nuevo juego
+        document.getElementById('addGameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('gameTitle').value;
+            const platform = document.getElementById('gamePlatform').value;
+            const imageFile = document.getElementById('gameImage').files[0];
+            
+            if (!title || !platform || !imageFile) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+            
+            // En un sistema real, aquí cargaríamos la imagen al servidor
+            // Para este ejemplo, usaremos FileReader para obtener la imagen como data URL
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newGame = {
+                    id: games.length + 1,
+                    title: title,
+                    platform: platform,
+                    rating: 0,
+                    comments: 0,
+                    image: e.target.result
+                };
+                
+                games.push(newGame);
+                renderGames();
+                document.getElementById('addGameModal').style.display = 'none';
+                document.getElementById('addGameForm').reset();
+                document.getElementById('previewImage').innerHTML = '<i class="fas fa-image" style="font-size: 2rem; color: var(--text-light);"></i>';
+            };
+            reader.readAsDataURL(imageFile);
+        });
+
+        // Inicializar
+        renderGames();
+    </script>
+</body>
+</html>
+

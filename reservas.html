@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub | Reservas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --card-bg: #ffffff;
+            --gaming-accent: #7209b7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text);
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: var(--card-bg);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 30px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+            border-right: 3px solid var(--primary);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            background-color: #f5f7fa;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--gaming-accent);
+            border-radius: 3px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--gaming-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a08a0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gaming-accent);
+            color: var(--gaming-accent);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(114, 9, 183, 0.1);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Room cards */
+        .room-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #f1f3f5;
+        }
+
+        .room-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--gaming-accent));
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .room-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .status-available {
+            background-color: var(--success);
+            box-shadow: 0 0 5px var(--success);
+        }
+        
+        .status-occupied {
+            background-color: var(--danger);
+            box-shadow: 0 0 5px var(--danger);
+        }
+        
+        .room-info {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .room-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #f1f3f5;
+        }
+
+        .room-info-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .room-info-value {
+            font-weight: 500;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .transaction-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .transaction-detail-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .transaction-detail-title i {
+            color: var(--gaming-accent);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        /* Flatpickr customization */
+        .flatpickr-calendar {
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        
+        .flatpickr-day.selected {
+            background: var(--gaming-accent);
+            border-color: var(--gaming-accent);
+        }
+        
+        .flatpickr-day.selected:hover {
+            background: var(--gaming-accent);
+            border-color: var(--gaming-accent);
+        }
+
+        @media (max-width: 1200px) {
+            .rooms-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(114, 9, 183, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(114, 9, 183, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(114, 9, 183, 0); }
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px var(--gaming-accent),
+                         0 0 20px var(--gaming-accent),
+                         0 0 30px var(--gaming-accent);
+        }
+
+        .pixel-border {
+            position: relative;
+            border: 3px solid var(--gaming-accent);
+            border-image: linear-gradient(45deg, var(--gaming-accent), var(--primary)) 1;
+            box-shadow: 0 0 15px rgba(114, 9, 183, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+       <nav class="sidebar">
+     <div class="logo">
+       <i class="fas fa-gamepad"></i>
+       <span>GameHub</span>
+     </div>
+     <ul class="nav-menu">
+       <li class="nav-item">
+         <a href="index.html" class="nav-link">
+           <i class="fas fa-chart-line"></i>
+           <span>Dashboard</span>
+         </a>
+       </li>
+       <li class="nav-item">
+         <a href="salas.html" class="nav-link active">
+           <i class="fas fa-tv"></i>
+           <span>Salas</span>
+         </a>
+       </li>
+                <li class="nav-item">
+                    <a href="inventario.html" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="transacciones.html" class="nav-link">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Transacciones</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="gastos.html" class="nav-link">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Gastos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="reservas.html" class="nav-link active">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Reservas</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Reservas de Salas</h1>
+            </div>
+
+            <!-- Listado de Salas -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-gamepad"></i> Salas Disponibles</h3>
+                </div>
+                <div class="rooms-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;">
+                    <!-- Sala 1 - Disponible -->
+                    <div class="room-card" data-status="available">
+                        <div class="room-header">
+                            <h4 class="room-title">Sala 01 - PS5</h4>
+                            <span class="status-indicator status-available" title="Disponible"></span>
+                        </div>
+                        <div class="room-info">
+                            <div class="room-info-item">
+                                <span class="room-info-label">Capacidad:</span>
+                                <span class="room-info-value">4 jugadores</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Tarifa:</span>
+                                <span class="room-info-value">$15,000/hora</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Equipamiento:</span>
+                                <span class="room-info-value">PS5 + 4 Controles</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showReservationModal('Sala 01 - PS5', 15000)">
+                            <i class="fas fa-calendar-plus"></i> Reservar
+                        </button>
+                    </div>
+                    
+                    <!-- Sala 2 - Ocupada -->
+                    <div class="room-card" data-status="occupied">
+                        <div class="room-header">
+                            <h4 class="room-title">Sala 02 - Xbox</h4>
+                            <span class="status-indicator status-occupied" title="Ocupada"></span>
+                        </div>
+                        <div class="room-info">
+                            <div class="room-info-item">
+                                <span class="room-info-label">Capacidad:</span>
+                                <span class="room-info-value">4 jugadores</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Tarifa:</span>
+                                <span class="room-info-value">$12,000/hora</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Equipamiento:</span>
+                                <span class="room-info-value">Xbox Series X + 4 Controles</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; opacity: 0.7; cursor: not-allowed;" disabled>
+                            <i class="fas fa-calendar-plus"></i> Reservar
+                        </button>
+                    </div>
+                    
+                    <!-- Sala 3 - Disponible -->
+                    <div class="room-card" data-status="available">
+                        <div class="room-header">
+                            <h4 class="room-title">Sala 03 - PC Gaming</h4>
+                            <span class="status-indicator status-available" title="Disponible"></span>
+                        </div>
+                        <div class="room-info">
+                            <div class="room-info-item">
+                                <span class="room-info-label">Capacidad:</span>
+                                <span class="room-info-value">2 jugadores</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Tarifa:</span>
+                                <span class="room-info-value">$18,000/hora</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Equipamiento:</span>
+                                <span class="room-info-value">PC RTX 3080 + Monitor 144Hz</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showReservationModal('Sala 03 - PC Gaming', 18000)">
+                            <i class="fas fa-calendar-plus"></i> Reservar
+                        </button>
+                    </div>
+                    
+                    <!-- Sala 4 - Disponible -->
+                    <div class="room-card" data-status="available">
+                        <div class="room-header">
+                            <h4 class="room-title">Sala 04 - Switch</h4>
+                            <span class="status-indicator status-available" title="Disponible"></span>
+                        </div>
+                        <div class="room-info">
+                            <div class="room-info-item">
+                                <span class="room-info-label">Capacidad:</span>
+                                <span class="room-info-value">6 jugadores</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Tarifa:</span>
+                                <span class="room-info-value">$10,000/hora</span>
+                            </div>
+                            <div class="room-info-item">
+                                <span class="room-info-label">Equipamiento:</span>
+                                <span class="room-info-value">Nintendo Switch + 6 Joy-Con</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showReservationModal('Sala 04 - Switch', 10000)">
+                            <i class="fas fa-calendar-plus"></i> Reservar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservas Activas -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-calendar-check"></i> Mis Reservas</h3>
+                </div>
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead style="background-color: #f8f9fa; color: var(--text-light);">
+                        <tr>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Sala</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Fecha</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Hora</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Duración</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Jugadores</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Estado</th>
+                            <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f5;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsList">
+                        <!-- Se cargará dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Reserva -->
+    <div class="modal-overlay" id="reservationModal" style="display: none;">
+        <div class="modal-content">
+            <div class="transaction-detail-header">
+                <h3 class="transaction-detail-title">
+                    <i class="fas fa-calendar-alt"></i> Nueva Reserva
+                </h3>
+                <button class="btn btn-outline btn-sm close-modal">×</button>
+            </div>
+            
+            <form id="reservationForm" style="display: grid; gap: 15px;">
+                <div class="detail-item">
+                    <label class="detail-label">Sala:</label>
+                    <input type="text" class="form-control" id="roomNumber" readonly>
+                </div>
+                
+                <div class="date-time-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="detail-item">
+                        <label class="detail-label">Fecha:</label>
+                        <input type="text" class="form-control" id="reservationDate" 
+                               placeholder="Seleccione fecha" required>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <label class="detail-label">Hora:</label>
+                        <input type="text" class="form-control" id="reservationTime" 
+                               placeholder="Seleccione hora" required>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Duración:</label>
+                    <select class="form-control" id="duration">
+                        <option value="1">1 hora</option>
+                        <option value="2">2 horas</option>
+                        <option value="3">3 horas</option>
+                        <option value="4">4 horas</option>
+                    </select>
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Jugadores:</label>
+                    <input type="number" class="form-control" id="players" min="1" max="6" value="2" required>
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Controles Adicionales:</label>
+                    <select class="form-control" id="extraControllers">
+                        <option value="0">0 controles extra</option>
+                        <option value="1">1 control adicional (+$5,000)</option>
+                        <option value="2">2 controles adicionales (+$9,000)</option>
+                        <option value="4">4 controles adicionales (+$15,000)</option>
+                    </select>
+                </div>
+                
+                <div class="detail-item">
+                    <label class="detail-label">Total Estimado:</label>
+                    <div class="form-control total-display" style="background-color: rgba(114, 9, 183, 0.05); 
+                         font-weight: 600; color: var(--gaming-accent);" id="totalEstimate">
+                        $0
+                    </div>
+                </div>
+                
+                <div class="detail-item" style="text-align: right; margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Confirmar Reserva
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación Exitosa -->
+    <div class="modal-overlay" id="successModal" style="display: none;">
+        <div class="modal-content" style="text-align: center; max-width: 500px;">
+            <div class="success-animation">
+                <div class="checkmark" style="
+                    width: 80px;
+                    height: 80px;
+                    background: var(--gaming-accent);
+                    border-radius: 50%;
+                    margin: 0 auto 20px;
+                    position: relative;
+                    animation: pulse 1.5s infinite;
+                ">
+                    <i class="fas fa-check" style="
+                        color: white;
+                        font-size: 2.5rem;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    "></i>
+                </div>
+            </div>
+            
+            <h3 style="
+                font-size: 1.8rem;
+                color: var(--gaming-accent);
+                margin-bottom: 15px;
+                text-shadow: 0 0 10px rgba(114, 9, 183, 0.3);
+            ">
+                ¡Reserva Exitosa!
+            </h3>
+            
+            <div class="success-details" style="
+                background: rgba(114, 9, 183, 0.05);
+                padding: 20px;
+                border-radius: 12px;
+                margin: 15px 0;
+            ">
+                <p style="margin: 10px 0; font-size: 1.1rem;" id="successRoom"></p>
+                <p style="margin: 10px 0; color: var(--text-light);" id="successDateTime"></p>
+                <p style="
+                    margin: 15px 0 0;
+                    font-size: 1.4rem;
+                    color: var(--gaming-accent);
+                    font-weight: 700;
+                " id="successTotal"></p>
+            </div>
+            
+            <button class="btn btn-primary" onclick="document.getElementById('successModal').style.display = 'none'">
+                <i class="fas fa-thumbs-up"></i> ¡Entendido!
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Detalle de Reserva -->
+    <div class="modal-overlay" id="detailModal" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="transaction-detail-header">
+                <h3 class="transaction-detail-title" style="font-size: 1.6rem;">
+                    <i class="fas fa-receipt"></i> Detalle de Reserva
+                </h3>
+                <button class="btn btn-outline btn-sm close-detail-modal">×</button>
+            </div>
+            
+            <div class="reservation-detail-grid" style="
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 15px 0;
+            ">
+                <div class="detail-card" style="
+                    background: rgba(114, 9, 183, 0.05);
+                    padding: 15px;
+                    border-radius: 8px;
+                    border-left: 4px solid var(--gaming-accent);
+                ">
+                    <div class="detail-label" style="font-size: 0.9rem;">Sala Reservada</div>
+                    <div class="detail-value" style="
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        color: var(--gaming-accent);
+                    " id="detailRoom"></div>
+                </div>
+                
+                <div class="detail-card" style="
+                    background: rgba(76, 201, 240, 0.05);
+                    padding: 15px;
+                    border-radius: 8px;
+                    border-left: 4px solid var(--success);
+                ">
+                    <div class="detail-label" style="font-size: 0.9rem;">Fecha y Hora</div>
+                    <div class="detail-value" style="
+                        font-size: 1.1rem;
+                        font-weight: 500;
+                    " id="detailDateTime"></div>
+                </div>
+                
+                <div class="detail-card" style="
+                    background: rgba(248, 150, 30, 0.05);
+                    padding: 15px;
+                    border-radius: 8px;
+                    border-left: 4px solid var(--warning);
+                ">
+                    <div class="detail-label" style="font-size: 0.9rem;">Duración</div>
+                    <div class="detail-value" style="
+                        font-size: 1.1rem;
+                        font-weight: 500;
+                    " id="detailDuration"></div>
+                </div>
+                
+                <div class="detail-card" style="
+                    background: rgba(239, 35, 60, 0.05);
+                    padding: 15px;
+                    border-radius: 8px;
+                    border-left: 4px solid var(--danger);
+                ">
+                    <div class="detail-label" style="font-size: 0.9rem;">Estado</div>
+                    <div class="detail-value" style="
+                        font-size: 1.1rem;
+                        font-weight: 500;
+                        color: var(--success);
+                    " id="detailStatus"></div>
+                </div>
+            </div>
+            
+            <div class="detail-section" style="
+                margin-top: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+            ">
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin: 10px 0;">
+                    <span style="color: var(--text-light);">Jugadores:</span>
+                    <span style="font-weight: 500;" id="detailPlayers"></span>
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin: 10px 0;">
+                    <span style="color: var(--text-light);">Controles Extra:</span>
+                    <span style="font-weight: 500;" id="detailControllers"></span>
+                </div>
+                <div class="detail-item" style="display: flex; justify-content: space-between; margin: 10px 0;">
+                    <span style="color: var(--text-light);">Total Pagado:</span>
+                    <span style="
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                        color: var(--gaming-accent);
+                    " id="detailTotal"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Datos de ejemplo para reservas
+        let reservations = [];
+        let currentRoomRate = 0;
+        
+        // Configuración de selectores de fecha y hora
+        const datePicker = flatpickr("#reservationDate", {
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            disable: [
+                function(date) {
+                    return date.getDay() === 0; // Deshabilitar domingos
+                }
+            ]
+        });
+
+        const timePicker = flatpickr("#reservationTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 30,
+            minTime: "10:00",
+            maxTime: "21:30"
+        });
+
+        // Mostrar modal de reserva
+        function showReservationModal(roomName, hourlyRate) {
+            document.getElementById('reservationModal').style.display = 'flex';
+            document.getElementById('roomNumber').value = roomName;
+            currentRoomRate = hourlyRate;
+            updateTotalEstimate();
+            
+            // Resetear campos
+            document.getElementById('duration').value = "1";
+            document.getElementById('players').value = "2";
+            document.getElementById('extraControllers').value = "0";
+            datePicker.clear();
+            timePicker.clear();
+        }
+        
+        // Actualizar estimación de costo
+        function updateTotalEstimate() {
+            const duration = parseInt(document.getElementById('duration').value);
+            const extraControllers = parseInt(document.getElementById('extraControllers').value);
+            const controllerCost = extraControllers === 4 ? 15000 : extraControllers * 5000;
+            
+            const total = (currentRoomRate * duration) + controllerCost;
+            document.getElementById('totalEstimate').textContent = `$${total.toLocaleString()}`;
+        }
+        
+        // Listeners para actualizar estimación
+        document.getElementById('duration').addEventListener('change', updateTotalEstimate);
+        document.getElementById('extraControllers').addEventListener('change', updateTotalEstimate);
+
+        // Cerrar modal
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('reservationModal').style.display = 'none';
+            });
+        });
+
+        // Manejar reservas
+        document.getElementById('reservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedDate = datePicker.selectedDates[0];
+            const selectedTime = timePicker.selectedDates[0];
+            
+            if (!selectedDate || !selectedTime) {
+                alert('Por favor complete fecha y hora');
+                return;
+            }
+            
+            // Combinar fecha y hora
+            const reservationDateTime = new Date(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth(),
+                selectedDate.getDate(),
+                selectedTime.getHours(),
+                selectedTime.getMinutes()
+            );
+
+            const reservationData = {
+                id: Date.now(),
+                room: document.getElementById('roomNumber').value,
+                date: reservationDateTime,
+                duration: document.getElementById('duration').value,
+                players: document.getElementById('players').value,
+                extraControllers: document.getElementById('extraControllers').value,
+                status: 'Confirmada'
+            };
+            
+            // Validar horario de operación (10:00 - 22:00)
+            const startHour = reservationDateTime.getHours();
+            const endHour = startHour + parseInt(reservationData.duration);
+            
+            if (startHour < 10 || endHour > 22) {
+                alert('El local opera de 10:00 a 22:00 horas');
+                return;
+            }
+            
+            // Guardar reserva
+            reservations.push(reservationData);
+            renderReservations();
+            
+            // Mostrar modal de éxito
+            document.getElementById('successModal').style.display = 'flex';
+            document.getElementById('successRoom').textContent = reservationData.room;
+            document.getElementById('successDateTime').textContent = 
+                `${reservationDateTime.toLocaleDateString('es-ES')} - 
+                 ${reservationDateTime.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}`;
+            document.getElementById('successTotal').textContent = `Total: $${total.toLocaleString()}`;
+
+            // Efecto de confeti
+            for(let i = 0; i < 50; i++) {
+                const confeti = document.createElement('div');
+                confeti.style.position = 'fixed';
+                confeti.style.width = '8px';
+                confeti.style.height = '8px';
+                confeti.style.background = `hsl(${Math.random() * 360}deg, 100%, 50%)`;
+                confeti.style.borderRadius = '50%';
+                confeti.style.animation = `confeti-fall ${Math.random() * 3 + 2}s linear`;
+                confeti.style.left = `${Math.random() * 100}%`;
+                confeti.style.zIndex = '1001';
+                document.body.appendChild(confeti);
+                
+                setTimeout(() => confeti.remove(), 3000);
+            }
+        });
+
+        // Renderizar reservas
+        function renderReservations() {
+            const tbody = document.getElementById('reservationsList');
+            tbody.innerHTML = '';
+            
+            if (reservations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-info-circle" style="color: var(--text-light);"></i>
+                            No tienes reservas activas.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            reservations.forEach(res => {
+                const row = document.createElement('tr');
+                const date = new Date(res.date);
+                
+                row.innerHTML = `
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">${res.room}</td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">
+                        ${date.toLocaleDateString('es-ES')}
+                    </td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">
+                        ${date.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}
+                    </td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">${res.duration} hora(s)</td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">${res.players}</td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">
+                        <span style="background-color: rgba(76, 201, 240, 0.1); color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
+                            ${res.status}
+                        </span>
+                    </td>
+                    <td style="padding: 12px 15px; border-bottom: 1px solid #f1f3f5;">
+                        <button class="btn btn-outline btn-sm" onclick="showReservationDetail(${JSON.stringify(res).replace(/"/g, '&quot;')})">
+                            <i class="fas fa-eye"></i> Detalle
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Función para mostrar detalle de reserva
+        function showReservationDetail(reservation) {
+            const detailModal = document.getElementById('detailModal');
+            detailModal.style.display = 'flex';
+            
+            document.getElementById('detailRoom').textContent = reservation.room;
+            document.getElementById('detailDateTime').textContent = 
+                `${new Date(reservation.date).toLocaleDateString('es-ES')} - 
+                 ${new Date(reservation.date).toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}`;
+            document.getElementById('detailDuration').textContent = `${reservation.duration} horas`;
+            document.getElementById('detailStatus').textContent = reservation.status;
+            document.getElementById('detailPlayers').textContent = reservation.players;
+            document.getElementById('detailControllers').textContent = 
+                `${reservation.extraControllers} controles adicionales`;
+            document.getElementById('detailTotal').textContent = `$${(
+                (currentRoomRate * reservation.duration) + 
+                (reservation.extraControllers === 4 ? 15000 : reservation.extraControllers * 5000)
+            ).toLocaleString()}`;
+        }
+
+        // Animación CSS para el confeti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confeti-fall {
+                0% { transform: translateY(-100vh) rotate(0deg); }
+                100% { transform: translateY(100vh) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
